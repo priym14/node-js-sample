@@ -45,7 +45,7 @@ jobs:
          run: npm run build
 
        - name: Building docker image
-         uses: echo "Building docker image"
+         run: echo "Building docker image"
          
   deploy:
     name: Deploy
