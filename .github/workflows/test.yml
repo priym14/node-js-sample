@@ -42,7 +42,7 @@ jobs:
          run: npm ci   
 
        - name: Build the code
-         uses: npm run build
+         run: npm run build
 
        - name: Building docker image
          uses: echo "Building docker image"
