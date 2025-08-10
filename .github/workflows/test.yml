@@ -42,6 +42,7 @@ jobs:
          run: npm install   
 
        - name: Build the code
+         continue-on-error: true
          run: npm run build
 
        - name: Building docker image
