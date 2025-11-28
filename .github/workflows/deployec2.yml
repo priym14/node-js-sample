@@ -42,10 +42,10 @@ jobs:
               "APP_DIR=/home/ubuntu/nodejs",
               "mkdir -p $APP_DIR",
               "cd $APP_DIR",
-              "REPO_URL=https://github.com/priym14/node-js-sample.git"
+              "REPO_URL=https://github.com/priym14/node-js-sample.git",
               "if [ -d .git ]; then 
                   echo  Git repo exists, pulling latest code;
-                  git pull orgin master;
+                  git pull origin master;
                else 
                   echo  No repo found, cloning fresh;
                   git clone $REPO_URL .;
@@ -60,6 +60,7 @@ jobs:
 
               "echo Deployment finished successfully"
             ]'
+
 
 
 
