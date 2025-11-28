@@ -65,7 +65,9 @@ jobs:
           "pm2 delete $APP_NAME || true",
           "pm2 start index.js --name $APP_NAME",
           "pm2 save",
-          "pm2 list" ]
+          "pm2 list" 
+          ]
+
 
 
 
