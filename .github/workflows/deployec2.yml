@@ -67,6 +67,9 @@ jobs:
           "pm2 save",
           "pm2 list" 
           ]
+          }' \
+         --output text
+
 
 
 
