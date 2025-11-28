@@ -38,6 +38,7 @@ jobs:
             --comment "Deploying app via GitHub Actions" \
             --parameters commands='[
               "set -e",
+              "APP_NAME=node-app",
               "APP_DIR=/home/ubuntu/nodejs",
               "REPO_URL=https://github.com/priym14/node-js-sample",
               "if [ -d \"$APP_DIR/.git\" ]; then",
@@ -52,9 +53,12 @@ jobs:
               "fi",
               "npm install",
               "npm run build --if-present",
-              "pm2 start npm --name nodejs -- run start",
+              "echo "Restarting app with PM2...",
+              "pm2 delete "$APP_NAME" || true",
+              "pm2 start npm --name "$APP_NAME" -- start",
               "pm2 save",
               "pm2 list"
             ]' \
             --output text
+
 
