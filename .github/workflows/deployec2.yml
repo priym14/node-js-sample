@@ -52,17 +52,8 @@ jobs:
               "fi",
               "npm install",
               "npm run build --if-present",
-              "pm2 restart node-app || pm2 start index.js --name node-app",
-              "pm2 save"
+              "pm2 restart nodejs || pm2 start npm --name nodejs -- start",
+              "pm2 save",
+              "pm2 list"
             ]' \
             --output text
-
-
-
-
-
-
-
-
-
-
