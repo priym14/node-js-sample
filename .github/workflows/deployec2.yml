@@ -15,10 +15,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
 
       - name: Install Dependencies (Build Test)
         run: npm install
@@ -59,6 +55,7 @@ jobs:
               "pm2 list"
             ]' \
             --output text
+
 
 
 
