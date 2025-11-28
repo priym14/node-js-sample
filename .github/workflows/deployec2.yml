@@ -39,7 +39,7 @@ jobs:
             --parameters commands='[
               "set -e",
               "sudo npm install -g pm2",
-              "pm2 -v"
+              "pm2 -v",
               "APP_DIR=/home/ubuntu/nodejs",
               "REPO_URL=https://github.com/priym14/node-js-sample",
               "if [ -d \"$APP_DIR/.git\" ]; then",
@@ -58,6 +58,7 @@ jobs:
               "pm2 save"
             ]' \
             --output text
+
 
 
 
