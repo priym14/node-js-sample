@@ -44,8 +44,8 @@ jobs:
               "if [ -d \"$APP_DIR/.git\" ]; then",
               "  echo \" Git repo found. Pulling latest from main...\"",
               "  cd $APP_DIR",
-              "  git checkout main",
-              "  git pull origin main",
+              "  git checkout master",
+              "  git pull origin master",
               "else",
               "  echo \"Git repo NOT found. Doing fresh clone...\"",
               "  mkdir -p $APP_DIR",
@@ -59,6 +59,7 @@ jobs:
               "pm2 list"
             ]' \
             --output text
+
 
 
 
