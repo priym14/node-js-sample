@@ -52,7 +52,7 @@ jobs:
               "fi",
               "npm install",
               "npm run build --if-present",
-              "pm2 restart my-app || pm2 start index.js --name my-app",
+              "pm2 start npm --name "nodejs" -- start",
               "pm2 save"
             ]' \
             --output text
