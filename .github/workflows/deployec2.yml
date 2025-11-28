@@ -15,6 +15,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
       - name: Install Dependencies (Build Test)
         run: npm install
@@ -25,15 +29,15 @@ jobs:
           role-to-assume: arn:aws:iam::746387399152:role/GITHUB-OIDC-ROLE
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: us-west-1
-        
-     - name: Deploy to EC2
-  run: |
-    aws ssm send-command \
-      --instance-ids "${{ secrets.INSTANCE_ID }}" \
-      --document-name "AWS-RunShellScript" \
-      --comment "Deploying app via GitHub Actions" \
-      --parameters '{
-        "commands": [
+
+      - name: Deploy to EC2
+        run: |
+         aws ssm send-command \
+         --instance-ids "${{ secrets.INSTANCE_ID }}" \
+         --document-name "AWS-RunShellScript" \
+         --comment "Deploying app via GitHub Actions" \
+         --parameters '{
+         "commands": [
           "set -e",
 
           "APP_NAME=node-app",
@@ -43,8 +47,8 @@ jobs:
           "if [ -d \"$APP_DIR/.git\" ]; then",
           "  echo \"Git repo found. Pulling latest from main...\"",
           "  cd $APP_DIR",
-          "  git checkout main",
-          "  git pull origin main",
+          "  git checkout master",
+          "  git pull origin master",
           "else",
           "  echo \"Git repo NOT found. Doing fresh clone...\"",
           "  mkdir -p $APP_DIR",
@@ -61,11 +65,7 @@ jobs:
           "pm2 delete $APP_NAME || true",
           "pm2 start index.js --name $APP_NAME",
           "pm2 save",
-          "pm2 list"
-        ]
-      }' \
-      --output text
-
+          "pm2 list" ]
 
 
 
