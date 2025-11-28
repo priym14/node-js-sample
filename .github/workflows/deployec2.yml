@@ -30,47 +30,36 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: us-west-1
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 using SSM
         run: |
-         aws ssm send-command \
-         --instance-ids "${{ secrets.INSTANCE_ID }}" \
-         --document-name "AWS-RunShellScript" \
-         --comment "Deploying app via GitHub Actions" \
-         --parameters '{
-         "commands": [
-          "set -e",
+          aws ssm send-command \
+            --instance-ids "${{ secrets.INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Node.js App via GitHub Actions" \
+            --parameters 'commands=[
+              "set -e",
+              "echo Starting deployment",
+              "APP_DIR=/home/ubuntu/nodejs"
+              "mkdir -p $APP_DIR",
+              "cd $APP_DIR",
+              "REPO_URL=https://github.com/priym14/node-js-sample.git"
+              "if [ -d .git ]; then 
+                  echo  Git repo exists, pulling latest code;
+                  git pull orgin master;
+               else 
+                  echo  No repo found, cloning fresh;
+                  git clone $REPO_URL .;
+               fi",
 
-          "APP_NAME=node-app",
-          "APP_DIR=/home/ubuntu/nodejs",
-          "REPO_URL=https://github.com/priym14/node-js-sample",
+              "npm install",
 
-          "if [ -d \"$APP_DIR/.git\" ]; then",
-          "  echo \"Git repo found. Pulling latest from main...\"",
-          "  cd $APP_DIR",
-          "  git checkout master",
-          "  git pull origin master",
-          "else",
-          "  echo \"Git repo NOT found. Doing fresh clone...\"",
-          "  mkdir -p $APP_DIR",
-          "  git clone $REPO_URL $APP_DIR",
-          "fi",
+              "pm2 delete node-app || true",
+              "pm2 start index.js --name node-app",
 
-          "cd $APP_DIR",
-          "pwd",
-          "ls",
+              "pm2 save",
 
-          "npm install",
-          "npm run build --if-present",
-
-          "pm2 delete $APP_NAME || true",
-          "pm2 start index.js --name $APP_NAME",
-          "pm2 save",
-          "pm2 list" 
-          ]
-          }' \
-         --output text
-
-
+              "echo Deployment finished successfully"
+            ]'
 
 
 
