@@ -39,7 +39,9 @@ jobs:
             --parameters commands='[
               "set -e",
               "APP_DIR=/home/ubuntu/nodejs",
-              "sudo npm install -g pm2",
+               "sudo apt update && sudo apt upgrade -y",
+              "curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -",
+              "sudo apt install nodejs -y",
               "pm2 -v",
               "REPO_URL=https://github.com/priym14/node-js-sample",
               "if [ -d \"$APP_DIR/.git\" ]; then",
@@ -58,6 +60,7 @@ jobs:
               "pm2 save"
             ]' \
             --output text
+
 
 
 
