@@ -53,12 +53,13 @@ jobs:
               "fi",
               "npm install",
               "npm run build --if-present",
-              "pm2 delete "$APP_NAME" || true",
-              "pm2 start npm --name "$APP_NAME" -- start",
+              "pm2 delete $APP_NAME || true",
+              "pm2 start npm --name $APP_NAME -- start",
               "pm2 save",
               "pm2 list"
             ]' \
             --output text
+
 
 
 
