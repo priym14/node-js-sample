@@ -33,31 +33,31 @@ jobs:
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2
-  run: |
-    ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-      set -e
+        run: |
+         ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+         set -e
 
-      APP_DIR="/home/ubuntu/app"
-      REPO_URL="https://github.com/priym14/node-js-sample.git"
+         APP_DIR="/home/ubuntu/app"
+         REPO_URL="https://github.com/priym14/node-js-sample.git"
 
-      if [ -d "$APP_DIR/.git" ]; then
-        echo "Git repo found, pulling latest code..."
-        cd $APP_DIR
-        git pull origin master
-      else
-        echo "No git repo found, cloning repository..."
-        rm -rf $APP_DIR
-        git clone $REPO_URL $APP_DIR
-        cd $APP_DIR
-      fi
+         if [ -d "$APP_DIR/.git" ]; then
+          echo "Repo exists, pulling master..."
+          cd $APP_DIR
+          git pull origin master
+         else
+          echo "Repo not found, cloning master..."
+          rm -rf $APP_DIR
+          git clone -b master $REPO_URL $APP_DIR
+          cd $APP_DIR
+         fi
 
-      echo "Installing dependencies..."
-      npm install
-
-      echo "Building app..."
-      npm run build --if-present
-
-      echo "Restarting app with PM2..."
-      pm2 restart my-app || pm2 start index.js --name my-app
-      pm2 save
-    EOF
+         npm install
+         npm run build --if-present
+         pm2 restart my-app || pm2 start index.js --name my-app
+         pm2 save
+         echo "Building app..."
+         npm run build --if-present
+         echo "Restarting app with PM2..."
+         pm2 restart my-app || pm2 start index.js --name my-app
+         pm2 save
+         EOF
