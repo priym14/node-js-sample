@@ -1,0 +1,63 @@
+name: Deploy to EC2 using SSH
+on:
+  workflow_dispatch:
+    
+
+# Permission can be added at job level or workflow level    
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  Build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::746387399152:role/GITHUB-OIDC-ROLE
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: us-west-1
+
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Add EC2 to Known Hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+  run: |
+    ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+      set -e
+
+      APP_DIR="/home/ubuntu/app"
+      REPO_URL="https://github.com/priym14/node-js-sample.git"
+
+      if [ -d "$APP_DIR/.git" ]; then
+        echo "Git repo found, pulling latest code..."
+        cd $APP_DIR
+        git pull origin master
+      else
+        echo "No git repo found, cloning repository..."
+        rm -rf $APP_DIR
+        git clone $REPO_URL $APP_DIR
+        cd $APP_DIR
+      fi
+
+      echo "Installing dependencies..."
+      npm install
+
+      echo "Building app..."
+      npm run build --if-present
+
+      echo "Restarting app with PM2..."
+      pm2 restart my-app || pm2 start index.js --name my-app
+      pm2 save
+    EOF
