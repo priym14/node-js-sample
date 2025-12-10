@@ -15,13 +15,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install Dependencies (Build Test)
-        run: npm install
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -38,6 +31,8 @@ jobs:
             --comment "Deploy Node.js App via GitHub Actions" \
             --parameters 'commands=[
               "set -e",
+              "echo Switching to ubuntu user...",
+              "sudo -u ubuntu -i bash << '\''EOF'\''
               "echo Starting deployment",
               "APP_DIR=/home/ubuntu/nodejs",
               "mkdir -p $APP_DIR",
@@ -52,6 +47,7 @@ jobs:
                fi",
 
               "npm install",
+              "npm run build",
 
               "pm2 delete node-app || true",
               "pm2 start index.js --name node-app",
@@ -60,6 +56,7 @@ jobs:
 
               "echo Deployment finished successfully"
             ]'
+
 
 
 
